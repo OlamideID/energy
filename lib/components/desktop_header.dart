@@ -1,8 +1,5 @@
-import 'package:energy/core/layout.dart';
-import 'package:energy/pages/dummy.dart';
-import 'package:energy/pages/homepage.dart';
-import 'package:energy/pages/solar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DesktopHeader extends StatelessWidget {
   final List<String> navItems = [
@@ -28,85 +25,58 @@ class DesktopHeader extends StatelessWidget {
   DesktopHeader({super.key, this.onItemTap});
 
   void onNavItemTap(BuildContext context, String item) {
-    if (item == 'HOME' || item == 'ABOUT US' || item == 'CONTACT') {
-      if (onItemTap != null) {
-        onItemTap!(item); // Scroll in place
-      } else {
-        // Navigate to homepage with scroll target
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder:
-                (_) => MainLayout(
-                  child: Homepage(
-                    key: GlobalKey<HomepageState>(),
-                    initialScrollTarget: item,
-                  ),
-                ),
-          ),
-          (route) => false,
-        );
-      }
+    String? target;
+
+    switch (item) {
+      case 'HOME':
+        target = 'home';
+        break;
+      case 'ABOUT US':
+        target = 'about';
+        break;
+      case 'CONTACT':
+        target = 'contact';
+        break;
+    }
+
+    if (target != null) {
+      context.go('/?target=$target');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(50),
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Colors.white, Colors.green.shade50, Colors.white],
+          stops: const [0.0, 0.5, 1.0],
+        ),
+        borderRadius: BorderRadius.circular(60),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.green.withOpacity(0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
           ),
         ],
+        border: Border.all(color: Colors.green.shade100, width: 2),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         child: Row(
           children: [
-            // Logo
-            Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.wb_sunny,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                const Text(
-                  'Oando',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
-                ),
-                const Text(
-                  ' Clean Energy',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-
+            Image.asset('assets/novis.png', height: 70, fit: BoxFit.contain),
             const Spacer(),
-
-            // Navigation Items
             Row(
               children:
                   navItems.map((item) {
@@ -118,23 +88,53 @@ class DesktopHeader extends StatelessWidget {
                           item == 'OUR SERVICES' ? serviceItems : mediaItems;
 
                       return Padding(
-                        padding: const EdgeInsets.only(right: 30),
+                        padding: const EdgeInsets.only(right: 25),
                         child: PopupMenuButton<String>(
                           tooltip: '',
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black87,
-                                ),
+                          elevation: 12,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            side: BorderSide(
+                              color: Colors.green.shade100,
+                              width: 1,
+                            ),
+                          ),
+                          color: Colors.white,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              gradient: LinearGradient(
+                                colors: [Colors.white, Colors.green.shade50],
                               ),
-                              const SizedBox(width: 4),
-                              const Icon(Icons.keyboard_arrow_down, size: 16),
-                            ],
+                              border: Border.all(
+                                color: Colors.green.shade200,
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  item,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.green.shade700,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 18,
+                                  color: Colors.green.shade600,
+                                ),
+                              ],
+                            ),
                           ),
                           itemBuilder:
                               (context) =>
@@ -142,56 +142,81 @@ class DesktopHeader extends StatelessWidget {
                                       .map(
                                         (value) => PopupMenuItem<String>(
                                           value: value,
-                                          child: Text(value),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8,
+                                              horizontal: 4,
+                                            ),
+                                            child: Text(
+                                              value,
+                                              style: TextStyle(
+                                                color: Colors.green.shade700,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       )
                                       .toList(),
                           onSelected: (value) {
-                            Widget selectedPage;
-
                             switch (value) {
                               case 'Solar Energy Solutions':
-                                selectedPage = const SolarEnergyPage();
+                                context.go('/solar');
                                 break;
                               case 'Gas & Biofuels':
-                              case 'Sustainable Transport':
-                              case 'Wind Farms':
-                              case 'Geothermal Power Plants':
-                              case 'Waste to Energy':
-                              case 'Exclusive Interviews':
-                              case 'Media Releases':
-                                selectedPage = DummyPage(title: value);
+                                context.go('/gas-biofuels');
                                 break;
-                              default:
-                                selectedPage = const DummyPage(
-                                  title: 'Unknown Page',
-                                );
+                              case 'Sustainable Transport':
+                                context.go('/sustainable-transport');
+                                break;
+                              case 'Wind Farms':
+                                context.go('/wind-farms');
+                                break;
+                              case 'Geothermal Power Plants':
+                                context.go('/geothermal');
+                                break;
+                              case 'Waste to Energy':
+                                context.go('/waste-to-energy');
+                                break;
+                              case 'Exclusive Interviews':
+                                context.go('/interviews');
+                                break;
+                              case 'Media Releases':
+                                context.go('/media-releases');
+                                break;
                             }
-
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => MainLayout(child: selectedPage),
-                              ),
-                            );
                           },
                         ),
                       );
                     } else {
                       return Padding(
-                        padding: const EdgeInsets.only(right: 30),
+                        padding: const EdgeInsets.only(right: 25),
                         child: InkWell(
                           onTap: () => onNavItemTap(context, item),
-                          child: Padding(
+                          borderRadius: BorderRadius.circular(25),
+                          hoverColor: Colors.green.shade50,
+                          child: Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 6,
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              gradient: LinearGradient(
+                                colors: [Colors.white, Colors.green.shade50],
+                              ),
+                              border: Border.all(
+                                color: Colors.green.shade200,
+                                width: 1,
+                              ),
                             ),
                             child: Text(
                               item,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.green.shade700,
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ),

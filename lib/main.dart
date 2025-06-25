@@ -1,12 +1,13 @@
 import 'package:energy/components/desktop_header.dart';
 import 'package:energy/components/mobile.dart';
-import 'package:energy/core/layout.dart';
-import 'package:energy/pages/homepage.dart';
-import 'package:energy/pages/solar.dart';
-import 'package:energy/widgets/drawer.dart';
+import 'package:energy/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:url_strategy/url_strategy.dart';
+
 
 void main() {
+  setPathUrlStrategy();
+
   runApp(MyApp());
 }
 
@@ -15,37 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'Oando Clean Energy',
-      theme: ThemeData(primarySwatch: Colors.green, fontFamily: 'Roboto'),
-      // home: MainLayout(child: Homepage()),
-      home: MainLayout(child: Homepage()),
-    );
-  }
-}
-
-class SolarEnergyHomePage extends StatelessWidget {
-  final List<String> serviceItems = [
-    'Solar Energy Solutions',
-    'Gas & Biofuels',
-    'Sustainable Transport',
-    'Wind Farms',
-    'Geothermal Power Plants',
-    'Waste to Energy',
-  ];
-
-  final List<String> mediaItems = ['Exclusive Interviews', 'Media Releases'];
-
-  SolarEnergyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      endDrawer:
-          MediaQuery.of(context).size.width <= 800
-              ? MobileDrawer(serviceItems: serviceItems, mediaItems: mediaItems)
-              : null,
-      body: SingleChildScrollView(child: Column(children: [SolarEnergyPage()])),
+      theme: ThemeData(fontFamily: 'Roboto'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -60,7 +35,9 @@ class ResponsiveHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 768) {
+        // Increased breakpoint from 800 to 1000 or 1200
+        if (constraints.maxWidth > 1000) {
+          // or try 1200 for even more space
           return DesktopHeader(onItemTap: onItemTap);
         } else {
           return MobileHeader(scaffoldKey: scaffoldKey);
