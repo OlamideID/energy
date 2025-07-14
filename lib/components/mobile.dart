@@ -41,10 +41,20 @@ class MobileHeader extends StatelessWidget {
           const SizedBox(width: 30),
 
           Image.asset(
-            'assets/novis.png',
+            'assets/novis2.png',
             height: 77,
             fit: BoxFit.contain,
             opacity: const AlwaysStoppedAnimation(0.85),
+          ),
+          SizedBox(width: 10),
+          Text(
+            'Novis Energy',
+            style: TextStyle(
+              color: Colors.green[900],
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              fontStyle: FontStyle.normal,
+            ),
           ),
 
           const Spacer(),

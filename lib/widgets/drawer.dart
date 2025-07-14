@@ -2,43 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MobileDrawer extends StatefulWidget {
-  final List<String> serviceItems;
-  final List<String> mediaItems;
   final String? activeItem;
 
-  const MobileDrawer({
-    super.key,
-    required this.serviceItems,
-    required this.mediaItems,
-    this.activeItem,
-  });
+  const MobileDrawer({super.key, this.activeItem});
 
   @override
   State<MobileDrawer> createState() => _MobileDrawerState();
 }
 
 class _MobileDrawerState extends State<MobileDrawer> {
-  bool isServiceActive() => widget.serviceItems.contains(widget.activeItem);
-  bool isMediaActive() => widget.mediaItems.contains(widget.activeItem);
+  String? _currentActiveItem;
 
-  final Map<String, String> _routeMap = {
-    'HOME': '/',
-    'ABOUT US': '/about',
-    'CONTACT': '/contact',
-    'Solar Energy Solutions': '/solar',
-    'Gas & Biofuels': '/gas-biofuels',
-    'Sustainable Transport': '/sustainable-transport',
-    'Wind Farms': '/wind-farms',
-    'Geothermal Power Plants': '/geothermal',
-    'Waste to Energy': '/waste-to-energy',
-    'Exclusive Interviews': '/interviews',
-    'Media Releases': '/media-releases',
-  };
+  @override
+  void initState() {
+    super.initState();
+    _currentActiveItem = widget.activeItem;
+  }
+
+  String _determineActiveItem() {
+    // Get the current route
+    final currentRoute = GoRouterState.of(context).uri.toString();
+
+    if (currentRoute.startsWith('/services')) {
+      return 'SERVICES';
+    } else if (currentRoute.contains('target=about')) {
+      return 'ABOUT US';
+    } else if (currentRoute.contains('target=contact')) {
+      return 'CONTACT';
+    } else if (currentRoute == '/' || currentRoute.contains('target=home')) {
+      return 'HOME';
+    }
+
+    return _currentActiveItem ?? 'HOME';
+  }
 
   void handleTap(String item) {
-    Navigator.pop(context); // Close drawer
+    setState(() {
+      _currentActiveItem = item;
+    });
 
-    // Scroll targets
+    Navigator.pop(context);
+
     final scrollTargets = ['HOME', 'ABOUT US', 'CONTACT'];
     if (scrollTargets.contains(item)) {
       final target =
@@ -48,18 +52,15 @@ class _MobileDrawerState extends State<MobileDrawer> {
               ? 'about'
               : 'contact';
       context.go('/?target=$target');
-      return;
-    }
-
-    // Static routes
-    final route = _routeMap[item];
-    if (route != null) {
-      context.go(route);
+    } else if (item == 'SERVICES') {
+      context.go('/services');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final activeItem = _determineActiveItem();
+
     return Drawer(
       backgroundColor: Colors.white,
       elevation: 8,
@@ -91,17 +92,16 @@ class _MobileDrawerState extends State<MobileDrawer> {
                   vertical: 30,
                   horizontal: 20,
                 ),
-                child: GestureDetector(
+                child: InkWell(
                   onTap: () => context.go('/'),
                   child: Image.asset(
-                    'assets/novis.png',
+                    'assets/novis2.png',
                     height: 70,
                     fit: BoxFit.contain,
                     opacity: const AlwaysStoppedAnimation(0.8),
                   ),
                 ),
               ),
-
               Expanded(
                 child: ListView(
                   padding: EdgeInsets.zero,
@@ -109,145 +109,30 @@ class _MobileDrawerState extends State<MobileDrawer> {
                     DrawerMenuItem(
                       title: 'HOME',
                       icon: Icons.home_outlined,
-                      isActive: widget.activeItem == 'HOME',
+                      isActive: activeItem == 'HOME',
                       onTap: () => handleTap('HOME'),
                     ),
                     DrawerMenuItem(
                       title: 'ABOUT US',
                       icon: Icons.info_outline,
-                      isActive: widget.activeItem == 'ABOUT US',
+                      isActive: activeItem == 'ABOUT US',
                       onTap: () => handleTap('ABOUT US'),
                     ),
-
-                    // Services Expansion Tile
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color:
-                            isServiceActive()
-                                ? Colors.green.shade50
-                                : Colors.transparent,
-                        border: Border.all(
-                          color:
-                              isServiceActive()
-                                  ? Colors.green.shade200
-                                  : Colors.transparent,
-                          width: 1,
-                        ),
-                      ),
-                      child: ExpansionTile(
-                        initiallyExpanded: isServiceActive(),
-                        leading: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade100,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.engineering_outlined,
-                            color: Colors.green.shade700,
-                            size: 20,
-                          ),
-                        ),
-                        iconColor: Colors.green.shade600,
-                        collapsedIconColor: Colors.grey.shade600,
-                        title: Text(
-                          'OUR SERVICES',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color:
-                                isServiceActive()
-                                    ? Colors.green.shade700
-                                    : Colors.black87,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        children:
-                            widget.serviceItems.map((service) {
-                              return DrawerSubItem(
-                                title: service,
-                                isActive: widget.activeItem == service,
-                                onTap: () => handleTap(service),
-                              );
-                            }).toList(),
-                      ),
+                    DrawerMenuItem(
+                      title: 'OUR SERVICES',
+                      icon: Icons.construction_outlined,
+                      isActive: activeItem == 'SERVICES',
+                      onTap: () => handleTap('SERVICES'),
                     ),
-
-                    // Media Expansion Tile
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color:
-                            isMediaActive()
-                                ? Colors.green.shade50
-                                : Colors.transparent,
-                        border: Border.all(
-                          color:
-                              isMediaActive()
-                                  ? Colors.green.shade200
-                                  : Colors.transparent,
-                          width: 1,
-                        ),
-                      ),
-                      child: ExpansionTile(
-                        initiallyExpanded: isMediaActive(),
-                        leading: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade100,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.article_outlined,
-                            color: Colors.green.shade700,
-                            size: 20,
-                          ),
-                        ),
-                        iconColor: Colors.green.shade600,
-                        collapsedIconColor: Colors.grey.shade600,
-                        title: Text(
-                          'MEDIA',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color:
-                                isMediaActive()
-                                    ? Colors.green.shade700
-                                    : Colors.black87,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        children:
-                            widget.mediaItems.map((media) {
-                              return DrawerSubItem(
-                                title: media,
-                                isActive: widget.activeItem == media,
-                                onTap: () => handleTap(media),
-                              );
-                            }).toList(),
-                      ),
-                    ),
-
                     DrawerMenuItem(
                       title: 'CONTACT',
                       icon: Icons.contact_mail_outlined,
-                      isActive: widget.activeItem == 'CONTACT',
+                      isActive: activeItem == 'CONTACT',
                       onTap: () => handleTap('CONTACT'),
                     ),
                   ],
                 ),
               ),
-
-              // Footer Section
               Container(
                 margin: const EdgeInsets.all(20),
                 padding: const EdgeInsets.all(20),
@@ -267,64 +152,18 @@ class _MobileDrawerState extends State<MobileDrawer> {
                   ],
                   border: Border.all(color: Colors.green.shade100, width: 1),
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildSocialButton(Icons.facebook, 'Facebook'),
-                        _buildSocialButton(Icons.language, 'Website'),
-                        _buildSocialButton(Icons.email, 'Email'),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      '© 2025 Novis Energy',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green.shade600,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  '© 2025 Novis Energy',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.green.shade600,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButton(IconData icon, String tooltip) {
-    return Tooltip(
-      message: tooltip,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.green.shade600, Colors.green.shade700],
-          ),
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.green.withOpacity(0.3),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {}, // Add your social media links here
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Icon(icon, color: Colors.white, size: 20),
-            ),
           ),
         ),
       ),
@@ -348,103 +187,51 @@ class DrawerMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
+        color: isActive ? Colors.green.shade100 : Colors.transparent,
         borderRadius: BorderRadius.circular(15),
-        gradient:
-            isActive
-                ? LinearGradient(
-                  colors: [Colors.green.shade100, Colors.green.shade50],
-                )
-                : null,
         border:
             isActive
-                ? Border.all(color: Colors.green.shade300, width: 1)
+                ? Border(
+                  left: BorderSide(color: Colors.green.shade700, width: 5),
+                )
                 : null,
+        boxShadow:
+            isActive
+                ? [
+                  BoxShadow(
+                    color: Colors.green.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+                : [],
       ),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: isActive ? Colors.green.shade200 : Colors.green.shade100,
+            color: isActive ? Colors.green.shade300 : Colors.green.shade100,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: Colors.green.shade700, size: 20),
+          child: Icon(icon, color: Colors.green.shade800, size: 20),
         ),
         title: Text(
           title,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: isActive ? Colors.green.shade700 : Colors.black87,
+            fontWeight: FontWeight.bold,
+            color: isActive ? Colors.green.shade800 : Colors.black87,
             letterSpacing: 0.5,
           ),
         ),
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-    );
-  }
-}
-
-class DrawerSubItem extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-  final bool isActive;
-
-  const DrawerSubItem({
-    super.key,
-    required this.title,
-    required this.onTap,
-    required this.isActive,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 40, right: 12, top: 2, bottom: 2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: isActive ? Colors.green.shade100 : Colors.transparent,
-        border:
-            isActive
-                ? Border.all(color: Colors.green.shade200, width: 1)
-                : null,
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-        title: Row(
-          children: [
-            Container(
-              width: 4,
-              height: 4,
-              decoration: BoxDecoration(
-                color: isActive ? Colors.green.shade600 : Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14,
-                  color:
-                      isActive ? Colors.green.shade700 : Colors.grey.shade700,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
-          ],
-        ),
-        onTap: onTap,
-        dense: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

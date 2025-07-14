@@ -6,32 +6,30 @@ class AboutUS extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          // Define breakpoints
-          bool isSmallScreen = constraints.maxWidth < 768; // Mobile
-          bool isMediumScreen = constraints.maxWidth < 1200; // Tablet
-          // Large screen (Desktop) is >= 1200
-
-          // Adjust padding based on screen size
-          double horizontalPadding =
-              isSmallScreen ? 32.0 : (isMediumScreen ? 60.0 : 80.0);
-          double verticalPadding =
-              isSmallScreen ? 40.0 : (isMediumScreen ? 60.0 : 80.0);
-
-          return Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding,
-              vertical: verticalPadding,
-            ),
-            child:
-                isSmallScreen
-                    ? _buildMobileLayout()
-                    : _buildDesktopLayout(isMediumScreen),
-          );
-        },
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Define breakpoints
+        bool isSmallScreen = constraints.maxWidth < 768; // Mobile
+        bool isMediumScreen = constraints.maxWidth < 1200; // Tablet
+        // Large screen (Desktop) is >= 1200
+    
+        // Adjust padding based on screen size
+        double horizontalPadding =
+            isSmallScreen ? 32.0 : (isMediumScreen ? 60.0 : 80.0);
+        double verticalPadding =
+            isSmallScreen ? 40.0 : (isMediumScreen ? 60.0 : 80.0);
+    
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
+          child:
+              isSmallScreen
+                  ? _buildMobileLayout()
+                  : _buildDesktopLayout(isMediumScreen),
+        );
+      },
     );
   }
 

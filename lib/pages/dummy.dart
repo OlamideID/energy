@@ -1,67 +1,142 @@
 import 'package:flutter/material.dart';
 
-class DummyPage extends StatelessWidget {
-  final String title;
-
-  const DummyPage({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class Page2 extends StatelessWidget {
-  const Page2({super.key});
+class BioFuel extends StatelessWidget {
+  const BioFuel({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.orange.shade50,
-        padding: const EdgeInsets.all(20),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/biofuel.jpg', height: 200),
-            const SizedBox(height: 30),
+            // Full width image
+            Container(
+              width: double.infinity,
+              height: 500,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/fuel.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                  ),
+                ),
+                child: const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Leading Africa's Energy Transition with Gas and Biofuels",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10,
+                            color: Colors.black,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Centered title
             const Text(
-              'Gas & Biofuels',
+              'GAS & BIOFUELS',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepOrange,
+                color: Colors.green,
               ),
             ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'Our sustainable gas solutions and biofuel conversion services help reduce carbon emissions while maintaining energy efficiency.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+
+            const SizedBox(height: 8),
+
+            // Centered divider
+            Container(width: 120, height: 2, color: Colors.green),
+
+            const SizedBox(height: 32),
+
+            // Content with horizontal padding only
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: const TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                        height: 1.5,
+                      ),
+                      children: [
+                        TextSpan(
+                          text:
+                              'Though natural gas stands out as a transition fuel because of its economic viability compared to emerging renewable technologies and less polluting effects compared to other fossil fuels, making the use of gas for powering mobility a popular transition subject globally. ',
+                        ),
+                        TextSpan(
+                          text:
+                              'Moreso, the production of cleaner gases like green or blue hydrogen for clean mobility (hydrogen-powered vehicles) to achieve zero emissions assurance towards the retardation of global warming.',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Transportation being a key contributor to GHG emissions (23 - 30%), stimulating adoption and proliferation of hydrogen powered vehicles would make a landslide contribution in building a climate friendly world.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Clean gases and biofuels will complement the deployment of fossil based gases into the future, and these are new opportunities for both social and economic growth in Africa. There are various natural resources that have been explored as potential biofuel options within Africa, and some have met various levels of success, while others have met environmental or economic brick walls. Our plan is to plant energy crops (like cacti) to produce biofuels, thus ensuring no competition with human consumption of other suitable crops like corn, cassava, and sugar cane.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                ],
               ),
             ),
-            const SizedBox(height: 30),
-            Wrap(
-              spacing: 20,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Learn About Biofuels'),
-                ),
-                OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('Conversion Options'),
-                ),
-              ],
-            ),
+
+            // Footer
+            _buildFooter(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Container(
+      width: double.infinity,
+      color: Colors.black,
+      padding: const EdgeInsets.symmetric(vertical: 24.0),
+      child: const Center(
+        child: Text(
+          '© Copyright Novis Energy. All Rights Reserved',
+          style: TextStyle(color: Colors.white, fontSize: 14),
         ),
       ),
     );
@@ -502,173 +577,3 @@ class GeothermalLandingScreen extends StatelessWidget {
     );
   }
 }
-
-class InterviewsPage extends StatelessWidget {
-  const InterviewsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.indigo.shade50,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.mic_external_on, size: 80, color: Colors.indigo),
-            const SizedBox(height: 30),
-            const Text(
-              'Exclusive Interviews',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.indigo,
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'In-depth conversations with industry leaders and innovators shaping the future of renewable energy.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            const SizedBox(height: 40),
-            Wrap(
-              spacing: 20,
-              runSpacing: 20,
-              children: [
-                _buildInterviewCard('Dr. Sarah Chen', 'Solar Tech Innovations'),
-                _buildInterviewCard('Mark Williams', 'Biofuel Breakthroughs'),
-                _buildInterviewCard('Emma Rodriguez', 'Wind Farm Expansion'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInterviewCard(String name, String topic) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Container(
-        width: 300,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.indigo.shade100,
-              radius: 40,
-              child: const Icon(Icons.person, size: 40, color: Colors.indigo),
-            ),
-            const SizedBox(height: 15),
-            Text(
-              name,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              topic,
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 15),
-            OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.indigo,
-                side: const BorderSide(color: Colors.indigo),
-              ),
-              child: const Text('Watch Interview'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MediaReleasesPage extends StatelessWidget {
-  const MediaReleasesPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.blue.shade50,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.newspaper, size: 80, color: Colors.blue),
-            const SizedBox(height: 30),
-            const Text(
-              'Media Releases',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'Official announcements, press releases, and company updates from our energy solutions network.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            const SizedBox(height: 40),
-            Expanded(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  _buildReleaseItem(
-                    'New Solar Farm Partnership',
-                    'June 15, 2023',
-                    Icons.solar_power,
-                  ),
-                  _buildReleaseItem(
-                    'Biofuel Certification Achieved',
-                    'May 28, 2023',
-                    Icons.local_gas_station,
-                  ),
-                  _buildReleaseItem(
-                    'Annual Sustainability Report',
-                    'April 10, 2023',
-                    Icons.assessment,
-                  ),
-                  _buildReleaseItem(
-                    'EV Charging Network Expansion',
-                    'March 22, 2023',
-                    Icons.electric_car,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReleaseItem(String title, String date, IconData icon) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      elevation: 2,
-      child: ListTile(
-        leading: Icon(icon, color: Colors.blue),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(date),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {},
-      ),
-    );
-  }
-}
-
-

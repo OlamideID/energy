@@ -1,30 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class DesktopHeader extends StatelessWidget {
-  final List<String> navItems = [
-    'HOME',
-    'ABOUT US',
-    'OUR SERVICES',
-    'MEDIA',
-    'CONTACT',
-  ];
-
-  final List<String> serviceItems = [
-    'Solar Energy Solutions',
-    'Gas & Biofuels',
-    'Sustainable Transport',
-    'Wind Farms',
-    'Geothermal Power Plants',
-    'Waste to Energy',
-  ];
-
-  final List<String> mediaItems = ['Exclusive Interviews', 'Media Releases'];
+class DesktopHeader extends StatefulWidget {
+  final List<String> navItems = ['HOME', 'ABOUT US', 'OUR SERVICES', 'CONTACT'];
   final Function(String)? onItemTap;
 
   DesktopHeader({super.key, this.onItemTap});
 
+  @override
+  State<DesktopHeader> createState() => _DesktopHeaderState();
+}
+
+class _DesktopHeaderState extends State<DesktopHeader> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  String _determineActiveItem() {
+    // Get the current route
+    final currentRoute = GoRouterState.of(context).uri.toString();
+
+    if (currentRoute.startsWith('/services')) {
+      return 'OUR SERVICES';
+    } else if (currentRoute.contains('target=about')) {
+      return 'ABOUT US';
+    } else if (currentRoute.contains('target=contact')) {
+      return 'CONTACT';
+    } else if (currentRoute == '/' || currentRoute.contains('target=home')) {
+      return 'HOME';
+    }
+
+    return 'HOME';
+  }
+
   void onNavItemTap(BuildContext context, String item) {
+    setState(() {});
+
     String? target;
 
     switch (item) {
@@ -34,6 +46,9 @@ class DesktopHeader extends StatelessWidget {
       case 'ABOUT US':
         target = 'about';
         break;
+      case 'OUR SERVICES':
+        context.go('/services');
+        return;
       case 'CONTACT':
         target = 'contact';
         break;
@@ -46,6 +61,8 @@ class DesktopHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final activeItem = _determineActiveItem();
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
       decoration: BoxDecoration(
@@ -75,154 +92,85 @@ class DesktopHeader extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         child: Row(
           children: [
-            Image.asset('assets/novis.png', height: 70, fit: BoxFit.contain),
+            InkWell(
+              onTap: () => onNavItemTap(context, 'HOME'),
+              child: Image.asset(
+                'assets/novis2.png',
+                height: 70,
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              'Novis Energy',
+              style: TextStyle(
+                color: Colors.green[900],
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
             const Spacer(),
             Row(
               children:
-                  navItems.map((item) {
-                    final bool hasDropdown =
-                        item == 'OUR SERVICES' || item == 'MEDIA';
-
-                    if (hasDropdown) {
-                      final List<String> dropdownItems =
-                          item == 'OUR SERVICES' ? serviceItems : mediaItems;
-
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 25),
-                        child: PopupMenuButton<String>(
-                          tooltip: '',
-                          elevation: 12,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            side: BorderSide(
-                              color: Colors.green.shade100,
-                              width: 1,
-                            ),
+                  widget.navItems.map((item) {
+                    final isActive = activeItem == item;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 25),
+                      child: InkWell(
+                        onTap: () => onNavItemTap(context, item),
+                        borderRadius: BorderRadius.circular(25),
+                        hoverColor: Colors.green.shade50,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
                           ),
-                          color: Colors.white,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            gradient: LinearGradient(
+                              colors:
+                                  isActive
+                                      ? [
+                                        Colors.green.shade100,
+                                        Colors.green.shade200,
+                                      ]
+                                      : [Colors.white, Colors.green.shade50],
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              gradient: LinearGradient(
-                                colors: [Colors.white, Colors.green.shade50],
-                              ),
-                              border: Border.all(
-                                color: Colors.green.shade200,
-                                width: 1,
-                              ),
+                            border: Border.all(
+                              color:
+                                  isActive
+                                      ? Colors.green.shade400
+                                      : Colors.green.shade200,
+                              width: isActive ? 2 : 1,
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  item,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.green.shade700,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Icon(
-                                  Icons.keyboard_arrow_down,
-                                  size: 18,
-                                  color: Colors.green.shade600,
-                                ),
-                              ],
-                            ),
+                            boxShadow:
+                                isActive
+                                    ? [
+                                      BoxShadow(
+                                        color: Colors.green.withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                    : [],
                           ),
-                          itemBuilder:
-                              (context) =>
-                                  dropdownItems
-                                      .map(
-                                        (value) => PopupMenuItem<String>(
-                                          value: value,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 8,
-                                              horizontal: 4,
-                                            ),
-                                            child: Text(
-                                              value,
-                                              style: TextStyle(
-                                                color: Colors.green.shade700,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                          onSelected: (value) {
-                            switch (value) {
-                              case 'Solar Energy Solutions':
-                                context.go('/solar');
-                                break;
-                              case 'Gas & Biofuels':
-                                context.go('/gas-biofuels');
-                                break;
-                              case 'Sustainable Transport':
-                                context.go('/sustainable-transport');
-                                break;
-                              case 'Wind Farms':
-                                context.go('/wind-farms');
-                                break;
-                              case 'Geothermal Power Plants':
-                                context.go('/geothermal');
-                                break;
-                              case 'Waste to Energy':
-                                context.go('/waste-to-energy');
-                                break;
-                              case 'Exclusive Interviews':
-                                context.go('/interviews');
-                                break;
-                              case 'Media Releases':
-                                context.go('/media-releases');
-                                break;
-                            }
-                          },
-                        ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 25),
-                        child: InkWell(
-                          onTap: () => onNavItemTap(context, item),
-                          borderRadius: BorderRadius.circular(25),
-                          hoverColor: Colors.green.shade50,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              gradient: LinearGradient(
-                                colors: [Colors.white, Colors.green.shade50],
-                              ),
-                              border: Border.all(
-                                color: Colors.green.shade200,
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              item,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.green.shade700,
-                                letterSpacing: 0.5,
-                              ),
+                          child: Text(
+                            item,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight:
+                                  isActive ? FontWeight.w700 : FontWeight.w600,
+                              color:
+                                  isActive
+                                      ? Colors.green.shade800
+                                      : Colors.green.shade700,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
-                      );
-                    }
+                      ),
+                    );
                   }).toList(),
             ),
           ],

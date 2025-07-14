@@ -1,6 +1,7 @@
 import 'package:energy/core/layout.dart';
 import 'package:energy/pages/dummy.dart';
 import 'package:energy/pages/homepage.dart';
+import 'package:energy/pages/services.dart';
 import 'package:energy/pages/solar.dart';
 import 'package:energy/pages/waste.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ final router = GoRouter(
           builder:
               (context, state) => MainLayout(
                 activeItem: 'Gas & Biofuels',
-                child: const Page2(),
+                child: const BioFuel(),
               ),
         ),
         GoRoute(
@@ -60,27 +61,17 @@ final router = GoRouter(
               ),
         ),
         GoRoute(
+          path: 'services',
+          builder: (context, state) {
+            return MainLayout(activeItem: 'services', child: ServicesPage());
+          },
+        ),
+        GoRoute(
           path: 'waste-to-energy',
           builder:
               (context, state) => MainLayout(
                 activeItem: 'Waste to Energy',
                 child: const WasteToEnergyScreen(),
-              ),
-        ),
-        GoRoute(
-          path: 'interviews',
-          builder:
-              (context, state) => MainLayout(
-                activeItem: 'Exclusive Interviews',
-                child: const InterviewsPage(),
-              ),
-        ),
-        GoRoute(
-          path: 'media-releases',
-          builder:
-              (context, state) => MainLayout(
-                activeItem: 'Media Releases',
-                child: const MediaReleasesPage(),
               ),
         ),
       ],

@@ -61,7 +61,7 @@ class ContactUsSection extends StatelessWidget {
                           _buildContactItem(
                             icon: Icons.email_outlined,
                             title: 'EMAIL',
-                            content: 'novislimited1@gmail.com',
+                            content: 'info@novisenergy.ng',
                           ),
                         ],
                       );
@@ -72,14 +72,13 @@ class ContactUsSection extends StatelessWidget {
                           _buildContactItem(
                             icon: Icons.location_on_outlined,
                             title: 'ADDRESS',
-                            content:
-                                'Wings Office Complex 17a Ozumba Mbadiwe Avenue Victoria Island Lagos',
+                            content: 'N0. 5 Audu Ogbe Street Jabi',
                           ),
                           const SizedBox(height: 40),
                           _buildContactItem(
                             icon: Icons.email_outlined,
                             title: 'EMAIL',
-                            content: 'info@oandocleanenergy.com',
+                            content: 'info@novisenergy.ng',
                           ),
                         ],
                       );
@@ -164,30 +163,6 @@ class ContactUsSection extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-// Example usage in a complete app
-class ContactUsApp extends StatelessWidget {
-  const ContactUsApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Contact Us Demo',
-      theme: ThemeData(primarySwatch: Colors.green, fontFamily: 'Roboto'),
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Add other sections above if needed
-              const ContactUsSection(),
-            ],
-          ),
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -6,157 +6,144 @@ class Services extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final services = [
+      {'title': 'Solar Energy Solutions', 'image': 'assets/solar.jpg'},
+      {'title': 'Gas & Biofuels', 'image': 'assets/biofuel.jpg'},
+      {'title': 'Sustainable Transport', 'image': 'assets/car.jpg'},
+      {'title': 'Wind Farms', 'image': 'assets/wind.jpg'},
+      {'title': 'Geothermal Power Plants', 'image': 'assets/power.jpg'},
+      {'title': 'Waste to Energy', 'image': 'assets/waste.jpg'},
+    ];
+
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.all(40.0),
-      child: SingleChildScrollView(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            bool isSmallScreen = constraints.maxWidth < 600;
-            bool isMediumScreen = constraints.maxWidth < 1200;
+      padding: const EdgeInsets.all(20.0),
+      alignment: Alignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'OUR SERVICES',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+              letterSpacing: 2,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Container(
+            width: 80,
+            height: 3,
+            color: Colors.green,
+            margin: const EdgeInsets.only(top: 8, bottom: 32),
+          ),
 
-            if (isSmallScreen) {
-              return _buildSingleColumnLayout(context);
-            } else if (isMediumScreen) {
-              return _buildTwoColumnLayout(context);
-            } else {
-              return _buildThreeColumnLayout(context);
-            }
-          },
-        ),
+          // Responsive layout using Wrap (lightweight)
+          LayoutBuilder(
+            builder: (context, constraints) {
+              int crossAxisCount = 1;
+              if (constraints.maxWidth >= 1200) {
+                crossAxisCount = 3;
+              } else if (constraints.maxWidth >= 600) {
+                crossAxisCount = 2;
+              }
+
+              final itemWidth =
+                  (constraints.maxWidth - ((crossAxisCount - 1) * 20)) /
+                  crossAxisCount;
+
+              return Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                children:
+                    services.map((service) {
+                      return SizedBox(
+                        width: itemWidth,
+                        child: _buildCard(
+                          context,
+                          service['title']!,
+                          service['image']!,
+                        ),
+                      );
+                    }).toList(),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildSingleColumnLayout(BuildContext context) {
-    return Column(children: _buildAllServiceCards(context));
-  }
-
-  Widget _buildTwoColumnLayout(BuildContext context) {
-    return Column(
-      children: [
-        _buildRow(_buildServiceCards(context).sublist(0, 2)),
-        const SizedBox(height: 40),
-        _buildRow(_buildServiceCards(context).sublist(2, 4)),
-        const SizedBox(height: 40),
-        _buildRow(_buildServiceCards(context).sublist(4, 6)),
-      ],
-    );
-  }
-
-  Widget _buildThreeColumnLayout(BuildContext context) {
-    return Column(
-      children: [
-        _buildRow(_buildServiceCards(context).sublist(0, 3)),
-        const SizedBox(height: 40),
-        _buildRow(_buildServiceCards(context).sublist(3, 6)),
-      ],
-    );
-  }
-
-  List<Widget> _buildAllServiceCards(BuildContext context) {
-    return _buildServiceCards(context)
-        .map(
-          (card) =>
-              Padding(padding: const EdgeInsets.only(bottom: 20), child: card),
-        )
-        .toList();
-  }
-
-  List<Widget> _buildServiceCards(BuildContext context) {
-    return [
-      _buildServiceCard(context, 'Solar Energy Solutions', 'assets/solar.jpg'),
-      _buildServiceCard(context, 'Gas & Biofuels', 'assets/biofuel.jpg'),
-      _buildServiceCard(context, 'Sustainable Transport', 'assets/car.jpg'),
-      _buildServiceCard(context, 'Wind Farms', 'assets/wind.jpg'),
-      _buildServiceCard(context, 'Geothermal Power Plants', 'assets/power.jpg'),
-      _buildServiceCard(context, 'Waste to Energy', 'assets/waste.jpg'),
-    ];
-  }
-
-  Widget _buildRow(List<Widget> children) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children:
-            children
-                .map(
-                  (widget) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: widget,
+  Widget _buildCard(BuildContext context, String title, String imagePath) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+        ],
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.asset(
+              imagePath,
+              width: double.infinity,
+              height: 160,
+              fit: BoxFit.cover,
+              errorBuilder:
+                  (context, error, stackTrace) => Container(
+                    height: 160,
+                    color: Colors.grey[200],
+                    child: const Icon(
+                      Icons.broken_image,
+                      size: 40,
+                      color: Colors.grey,
                     ),
                   ),
-                )
-                .toList(),
+            ),
+          ),
+          // Title + Link
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () => _navigateToDetail(context, title),
+                  child: const Text(
+                    'Learn more',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 14,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildServiceCard(
-    BuildContext context,
-    String title,
-    String imagePath,
-  ) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              height: 180,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) => Icon(
-                        Icons.image,
-                        size: 60,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            InkWell(
-              onTap: () => _navigateToDetailPage(context, title),
-              child: const Text(
-                'Learn more',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.green,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _navigateToDetailPage(BuildContext context, String title) {
-    final Map<String, String> routeMap = {
+  void _navigateToDetail(BuildContext context, String title) {
+    final routes = {
       'Solar Energy Solutions': '/solar',
       'Gas & Biofuels': '/gas-biofuels',
       'Sustainable Transport': '/sustainable-transport',
@@ -164,14 +151,7 @@ class Services extends StatelessWidget {
       'Geothermal Power Plants': '/geothermal',
       'Waste to Energy': '/waste-to-energy',
     };
-
-    final route = routeMap[title];
-
-    if (route != null) {
-      context.go(route); // OR context.push(route); if you want stack-based nav
-    } else {
-      // fallback route
-      context.go('/solar');
-    }
+    final route = routes[title] ?? '/solar';
+    context.push(route);
   }
 }

@@ -4,7 +4,6 @@ import 'package:energy/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-
 void main() {
   setPathUrlStrategy();
 
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
-      title: 'Oando Clean Energy',
+      title: 'Novis Energy',
       theme: ThemeData(fontFamily: 'Roboto'),
       debugShowCheckedModeBanner: false,
     );
@@ -35,9 +34,7 @@ class ResponsiveHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Increased breakpoint from 800 to 1000 or 1200
         if (constraints.maxWidth > 1000) {
-          // or try 1200 for even more space
           return DesktopHeader(onItemTap: onItemTap);
         } else {
           return MobileHeader(scaffoldKey: scaffoldKey);
